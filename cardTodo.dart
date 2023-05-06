@@ -1,31 +1,18 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_sort/provider/providersTodos.dart';
 
+import '../GlobalFunction.dart';
+import '../provider/providerTheme.dart';
+
 class CardTodo extends StatefulWidget {
-  final String id;
-  final String title;
-  final String keterangan;
-  final String dateStart;
-  final String dateEnd;
-  final String category;
-  final String selectedCategory;
+  final data;
   final Color color;
-  final bool isCheck;
 
   const CardTodo({
     Key? key,
-    required this.id,
-    required this.title,
-    required this.keterangan,
-    required this.dateStart,
-    required this.dateEnd,
-    required this.category,
-    required this.selectedCategory,
+    required this.data,
     required this.color,
-    required this.isCheck,
   }) : super(key: key);
 
   @override
@@ -38,14 +25,12 @@ class _CardTodoState extends State<CardTodo> {
 
   @override
   Widget build(BuildContext context) {
+    final provThemeMode = Provider.of<ThemeProvider>(context).enableDarkMode;
+
     return Container(
       padding: EdgeInsets.all(0),
-      color: Colors.white,
       child: Column(
         children: [
-          // widget.selectedCategory == 'null' ||
-          //         widget.category == widget.selectedCategory
-          //     ?
           ExpansionPanelList(
             expansionCallback: (int index, bool isExpanded) {
               setState(() {
@@ -54,6 +39,7 @@ class _CardTodoState extends State<CardTodo> {
             },
             children: [
               ExpansionPanel(
+                backgroundColor: MyTheme(provThemeMode),
                 headerBuilder: (BuildContext context, bool isExpanded) {
                   return Padding(
                     padding: const EdgeInsets.all(10),
@@ -63,13 +49,13 @@ class _CardTodoState extends State<CardTodo> {
                           child: Checkbox(
                             fillColor: MaterialStatePropertyAll(widget.color),
                             checkColor: Colors.white,
-                            value: widget.isCheck,
+                            value: widget.data.isCheck,
                             onChanged: (bool? value) {
                               if (value == true) {
                                 TodoProvider todoProvider =
                                     context.read<TodoProvider>();
                                 todoProvider.updateTodoStatus(
-                                    widget.id, value!);
+                                    widget.data.id, value!);
                               }
                             },
                           ),
@@ -79,13 +65,19 @@ class _CardTodoState extends State<CardTodo> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '${widget.title}',
+                                '${widget.data.title}',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
+                                  color: MyTheme(!provThemeMode),
                                   fontSize: 17,
                                 ),
                               ),
-                              Text('${widget.dateStart} - ${widget.dateEnd}'),
+                              Text(
+                                '${widget.data.tglmulai.toString()} - ${widget.data.tglselesai.toString()}',
+                                style: TextStyle(
+                                  color: MyTheme(!provThemeMode),
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -99,8 +91,9 @@ class _CardTodoState extends State<CardTodo> {
                     Container(
                       width: 250,
                       child: Text(
-                        widget.keterangan,
-                        style: TextStyle(fontSize: 16),
+                        widget.data.keterangan,
+                        style: TextStyle(
+                            fontSize: 16, color: MyTheme(!provThemeMode)),
                       ),
                     ),
                     SizedBox(height: 10),
