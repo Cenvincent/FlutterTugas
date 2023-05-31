@@ -1,38 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:todo_sort/provider/providerTheme.dart';
-import 'package:todo_sort/provider/providersTodos.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_sort/views/MainMenuBottom.dart';
-import 'package:todo_sort/views/MainTodo.dart';
-import 'package:todo_sort/views/newTodo.dart';
-import 'package:todo_sort/widget/cardTodo.dart';
+import 'package:todos_m09/darktheme.dart';
+import 'package:todos_m09/mainpage.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(
+    create: (_) => DarkThemeProvider(),
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // final prov = Provider.of<ThemeProvider>(context);
-
-    return MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
-            create: (context) => TodoProvider(),
-          ),
-          ChangeNotifierProvider(
-            create: (context) => ThemeProvider(),
-          ),
-        ],
-        child: MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'Flutter Demo',
-            theme: ThemeData(
-              primaryColor: Color(0xFF4E37A9),
-            ),
-            home: const BottomNavMain()));
+    final themeProvider = Provider.of<DarkThemeProvider>(context);
+    return MaterialApp(
+      title: 'Todos',
+      theme: themeProvider.darkTheme == true
+          ? themeProvider.dark
+          : themeProvider.light,
+      home: const MainPage(title: 'Todos'),
+      debugShowCheckedModeBanner: false,
+    );
   }
 }
